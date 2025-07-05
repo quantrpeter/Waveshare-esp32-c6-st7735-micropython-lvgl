@@ -4,6 +4,9 @@ import machine
 from time import sleep
 import st7735
 import lvgl as lv
+import utime as time
+from fs_driver import fs_register
+from machine import Pin
 
 # display settings
 _WIDTH = 128
@@ -66,7 +69,6 @@ display.set_backlight(100)
 scrn = lv.screen_active()
 scrn.set_style_bg_color(lv.color_hex(0xffffff), 0)  # Black background
 
-from fs_driver import fs_register
 fs_drv = lv.fs_drv_t()
 fs_register(fs_drv, "S")
 
@@ -75,13 +77,21 @@ img.set_src("S:colorful.png")
 img.set_size(128, 128)
 img.center()
 
-# import task_handler
-# task_handler.TaskHandler()
-# sleep(2)
+p4=Pin(20, Pin.IN, Pin.PULL_UP)  # Button pin
 
-import utime as time
+print("end")
 
 while True:
     time.sleep_ms(20)
     lv.task_handler()
+    sleep(0.2)
+    if not p4.value():  # Button pressed
+        print("Button pressed")
+        sleep(0.1)  # Debounce delay
+        img.set_src("S:blue.png")
+        img.invalidate() 
+        scrn.invalidate()
+        lv.image.cache_drop("S:colorful.png")
+        lv.image.cache_drop(None)
+        lv.display_flush(display)
 
