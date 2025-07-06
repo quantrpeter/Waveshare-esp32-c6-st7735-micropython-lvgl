@@ -75,32 +75,32 @@ label.align(lv.ALIGN.CENTER, 0, 30)
 # Draw a rectangle
 rect1 = lv.obj(scrn)
 rect1.set_size(10, 10)
-rect1.set_style_bg_color(lv.color_hex(0x00aa00), 0)  # Green color
-rect1.set_style_border_color(lv.color_hex(0xffffff), 0)  # Yellow border
+rect1.set_style_bg_color(lv.color_hex(0x00aa00), 0)
+rect1.set_style_border_color(lv.color_hex(0xffffff), 0)
 rect1.set_style_border_width(1, 0)
 rect1.set_style_radius(0, 0)
 rect1.align(lv.ALIGN.TOP_LEFT, 0, 0)
 
 rect2 = lv.obj(scrn)
 rect2.set_size(10, 10)
-rect2.set_style_bg_color(lv.color_hex(0xaa0000), 0)  # Green color
-rect2.set_style_border_color(lv.color_hex(0xffffff), 0)  # Yellow border
+rect2.set_style_bg_color(lv.color_hex(0xaa0000), 0)
+rect2.set_style_border_color(lv.color_hex(0xffffff), 0)
 rect2.set_style_border_width(1, 0)
 rect2.set_style_radius(0, 0)
 rect2.align(lv.ALIGN.TOP_RIGHT, 0, 0)
 
 rect3 = lv.obj(scrn)
 rect3.set_size(10, 10)
-rect3.set_style_bg_color(lv.color_hex(0xaa00aa), 0)  # Green color
-rect3.set_style_border_color(lv.color_hex(0xffffff), 0)  # Yellow border
+rect3.set_style_bg_color(lv.color_hex(0xaa00aa), 0)
+rect3.set_style_border_color(lv.color_hex(0xffffff), 0)
 rect3.set_style_border_width(1, 0)
 rect3.set_style_radius(0, 0)
 rect3.align(lv.ALIGN.BOTTOM_RIGHT, 0, 0)
 
 rect4 = lv.obj(scrn)
 rect4.set_size(10, 10)
-rect4.set_style_bg_color(lv.color_hex(0x0000aa), 0)  # Green color
-rect4.set_style_border_color(lv.color_hex(0xffffff), 0)  # Yellow border
+rect4.set_style_bg_color(lv.color_hex(0x0000aa), 0)
+rect4.set_style_border_color(lv.color_hex(0xffffff), 0)
 rect4.set_style_border_width(1, 0)
 rect4.set_style_radius(0, 0)
 rect4.align(lv.ALIGN.BOTTOM_LEFT, 0, 0)
@@ -108,8 +108,8 @@ rect4.align(lv.ALIGN.BOTTOM_LEFT, 0, 0)
 # Draw a circle
 circle = lv.obj(scrn)
 circle.set_size(50, 50)
-circle.set_style_bg_color(lv.color_hex(0x0000ff), 0)  # Blue color
-circle.set_style_border_color(lv.color_hex(0xff00ff), 0)  # Magenta border
+circle.set_style_bg_color(lv.color_hex(0x0000ff), 0)
+circle.set_style_border_color(lv.color_hex(0xff00ff), 0)
 circle.set_style_border_width(3, lv.STATE.DEFAULT)
 circle.set_style_radius(25, 0)  # Make it circular (radius = half of width/height)
 circle.align(lv.ALIGN.CENTER, 0, -10)
