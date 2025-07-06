@@ -89,9 +89,5 @@ while True:
         print("Button pressed")
         sleep(0.1)  # Debounce delay
         img.set_src("S:blue.png")
-        img.invalidate() 
-        scrn.invalidate()
-        lv.image.cache_drop("S:colorful.png")
-        lv.image.cache_drop(None)
-        lv.display_flush(display)
+        lv.refr_now(lv.screen_active().get_display())
 
