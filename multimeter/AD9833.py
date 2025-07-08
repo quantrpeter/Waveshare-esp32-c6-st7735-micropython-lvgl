@@ -61,7 +61,9 @@ class AD9833:
         return
     
     def disable(self):
-        self.cs.value(1)  # Set CS pin high to disable AD9833
+        # self.cs.value(1)  # Set CS pin high to disable AD9833
+        # print('Disabling AD9833')
+        # print(self.cs.value())
         return
 
     def write_data(self, data):
@@ -75,7 +77,6 @@ class AD9833:
         self.cs.value(0)
         self.spi.write(data)
         self.cs.value(1)
-
         return
 
     def set_control_reg(self, B28=1, HLB=0, FS=0, PS=0, RESET=0, SLP1=0, SLP12=0, OP=0, DIV2=0, MODE=0):

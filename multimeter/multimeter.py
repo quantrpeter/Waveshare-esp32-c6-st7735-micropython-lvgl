@@ -50,11 +50,10 @@ _SCK = 22  # SCL
 _HOST = 1  # SPI2
 
 _LCD_CS = 18
-_LCD_FREQ = 8000000
+_LCD_FREQ = 2000000
 
 _OFFSET_X = 2
 _OFFSET_Y = 3
-
 
 temp = machine.Pin(_LCD_CS, machine.Pin.OUT)
 
@@ -66,6 +65,9 @@ spi_bus = machine.SPI.Bus(
     sck=_SCK
 )
 
+ad9833 = AD9833.AD9833(sdo = 4, clk = 3, cs = 2,  fmclk = 25)
+
+temp.value(0)
 print('s2')
 display_bus = lcd_bus.SPIBus(
     spi_bus=spi_bus,
@@ -121,23 +123,24 @@ button1 = Pin(5, Pin.IN, Pin.PULL_UP)  # Button pin
 
 drawMenu()
 
-temp.value(1)
-sleep(1)
-
+# temp.value(1)
 # display_bus.deinit()
 
-ad9833 = AD9833.AD9833(sdo = 4, clk = 3, cs = 2,  fmclk = 25)
-ad9833.set_frequency(300, 0)
-ad9833.set_frequency(2600, 1)
-ad9833.set_phase(0, 0, rads = False)
-ad9833.set_phase(180, 1, rads = False)
-ad9833.select_freq_phase(0,0)
-ad9833.set_mode('SIN')
+# ad9833 = AD9833.AD9833(sdo = 4, clk = 3, cs = 2,  fmclk = 25)
+# ad9833.set_frequency(300, 0)
+# ad9833.set_frequency(600, 1)
+# ad9833.set_phase(0, 0, rads = False)
+# ad9833.set_phase(180, 1, rads = False)
+# ad9833.select_freq_phase(0,0)
+# ad9833.set_mode('SIN')
+# time.sleep(2)
 
+# ad9833.set_mode('SQUARE')
+# ad9833.disable()
 time.sleep(2)
 
-ad9833.set_mode('SQUARE')
-time.sleep(2)
+# temp.value(0)
+# time.sleep(200)
 
 print("end")
 while True:
