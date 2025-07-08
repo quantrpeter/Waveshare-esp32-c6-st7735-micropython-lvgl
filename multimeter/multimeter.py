@@ -127,15 +127,18 @@ drawMenu()
 # display_bus.deinit()
 
 # ad9833 = AD9833.AD9833(sdo = 4, clk = 3, cs = 2,  fmclk = 25)
-# ad9833.set_frequency(300, 0)
-# ad9833.set_frequency(600, 1)
-# ad9833.set_phase(0, 0, rads = False)
-# ad9833.set_phase(180, 1, rads = False)
-# ad9833.select_freq_phase(0,0)
-# ad9833.set_mode('SIN')
-# time.sleep(2)
+ad9833.set_frequency(1300,0)
+ad9833.set_frequency(2600, 1)
+ad9833.set_phase(0, 0, rads = False)
+ad9833.set_phase(180, 1, rads = False)
 
-# ad9833.set_mode('SQUARE')
+time.sleep(1.5)
+
+ad9833.select_freq_phase(0,0)
+ad9833.set_mode('SIN')
+time.sleep(2)
+
+ad9833.set_mode('SQUARE')
 # ad9833.disable()
 time.sleep(2)
 
@@ -152,8 +155,11 @@ while True:
         print(selected)
         drawMenu()
         lv.refr_now(lv.screen_active().get_display())
+        ad9833.select_freq_phase(0,0)
+        ad9833.set_mode('SIN')
     if not button1.value():
         selected = (selected - 1) % 2
         print(selected)
         drawMenu()
         lv.refr_now(lv.screen_active().get_display())
+        ad9833.set_mode('SQUARE/2')

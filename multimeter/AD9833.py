@@ -47,7 +47,7 @@ class AD9833:
             mosi=sdo,
             sck=clk
         )
-        self.spi = machine.SPI.Device(spi_bus=self.spi_bus, freq=2000000, cs=cs)
+        self.spi = machine.SPI.Device(spi_bus=self.spi_bus, freq=20000000, cs=cs)
 
         self.set_control_reg(B28=1, RESET=1)
 
@@ -60,11 +60,11 @@ class AD9833:
         print('init 1')
         return
     
-    def disable(self):
+    # def disable(self):
         # self.cs.value(1)  # Set CS pin high to disable AD9833
         # print('Disabling AD9833')
         # print(self.cs.value())
-        return
+        # return
 
     def write_data(self, data):
         """write_data, function to write data to
