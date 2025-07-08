@@ -8,8 +8,8 @@ import lvgl as lv
 lv.init()
 
 # display settings
-_WIDTH = 128
-_HEIGHT = 128
+_WIDTH = 80
+_HEIGHT = 160
 _BL = 19
 _RST = 14
 _DC = 15
@@ -22,8 +22,8 @@ _HOST = 1  # SPI2
 _LCD_CS = 18
 _LCD_FREQ = 2000000
 
-_OFFSET_X = 2
-_OFFSET_Y = 3
+_OFFSET_X = 26
+_OFFSET_Y = 1
 
 print('s1');
 spi_bus = machine.SPI.Bus(
@@ -61,14 +61,15 @@ print('s4');
 
 # display.set_power(True)
 display.init(st7735.TYPE_R_RED)
-display.set_rotation(lv.DISPLAY_ROTATION._180)
+display.set_color_inversion(True)
+# display.set_rotation(lv.DISPLAY_ROTATION._90)
 display.set_backlight(100)
 
 scrn = lv.screen_active()
 scrn.set_style_bg_color(lv.color_hex(0xff0000), 0)
 
 label = lv.label(scrn)
-label.set_text('HELLO WORLD!')
+label.set_text('HELLO')
 label.set_style_text_color(lv.color_hex(0xffffff), 0)
 label.align(lv.ALIGN.CENTER, 0, 30)
 

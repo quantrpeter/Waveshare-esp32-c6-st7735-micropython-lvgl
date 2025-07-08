@@ -55,6 +55,9 @@ _LCD_FREQ = 8000000
 _OFFSET_X = 2
 _OFFSET_Y = 3
 
+
+temp = machine.Pin(_LCD_CS, machine.Pin.OUT)
+
 print('s1')
 spi_bus = machine.SPI.Bus(
     host=_HOST,
@@ -118,20 +121,23 @@ button1 = Pin(5, Pin.IN, Pin.PULL_UP)  # Button pin
 
 drawMenu()
 
-display_bus.deinit()
+temp.value(1)
+sleep(1)
+
+# display_bus.deinit()
 
 ad9833 = AD9833.AD9833(sdo = 4, clk = 3, cs = 2,  fmclk = 25)
-ad9833.set_frequency(1300, 0)
+ad9833.set_frequency(300, 0)
 ad9833.set_frequency(2600, 1)
 ad9833.set_phase(0, 0, rads = False)
 ad9833.set_phase(180, 1, rads = False)
 ad9833.select_freq_phase(0,0)
 ad9833.set_mode('SIN')
 
-time.sleep(3)
+time.sleep(2)
 
 ad9833.set_mode('SQUARE')
-time.sleep(3)
+time.sleep(2)
 
 print("end")
 while True:

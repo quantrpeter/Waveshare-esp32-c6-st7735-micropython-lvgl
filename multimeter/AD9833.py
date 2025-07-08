@@ -42,12 +42,12 @@ class AD9833:
         self.cs = machine.Pin(cs, machine.Pin.OUT)
         self.cs.value(1)
 
-        spi_bus = machine.SPI.Bus(
+        self.spi_bus = machine.SPI.Bus(
             host=1,
             mosi=sdo,
             sck=clk
         )
-        self.spi = machine.SPI.Device(spi_bus=spi_bus, freq=20000000, cs=cs)
+        self.spi = machine.SPI.Device(spi_bus=self.spi_bus, freq=20000000, cs=cs)
 
         self.set_control_reg(B28=1, RESET=1)
 
@@ -58,6 +58,10 @@ class AD9833:
         self.phase0 = 0
         self.phase1 = 0
         print('init 1')
+        return
+    
+    def disable(self):
+        self.cs.value(1)  # Set CS pin high to disable AD9833
         return
 
     def write_data(self, data):
