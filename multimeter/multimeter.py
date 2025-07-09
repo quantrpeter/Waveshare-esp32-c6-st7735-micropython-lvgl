@@ -69,7 +69,6 @@ display_bus = lcd_bus.SPIBus(
     cs=_LCD_CS,
 )
 
-ad9833 = AD9833.AD9833(sdo = 4, clk = 3, cs = 2,  fmclk = 25)
 
 display = st7735.ST7735(
     data_bus=display_bus,
@@ -120,7 +119,7 @@ drawMenu()
 # temp.value(1)
 # display_bus.deinit()
 
-# ad9833 = AD9833.AD9833(sdo = 4, clk = 3, cs = 2,  fmclk = 25)
+ad9833 = AD9833.AD9833(sdo = 21, clk = 22, cs = 2,  fmclk = 25)
 ad9833.set_frequency(1300, 0)
 # ad9833.set_frequency(2600, 1)
 ad9833.set_phase(0, 0, rads = False)
