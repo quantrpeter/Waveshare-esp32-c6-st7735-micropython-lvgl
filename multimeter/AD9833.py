@@ -40,6 +40,8 @@ class AD9833:
         self.clk = machine.Pin(clk)
         self.cs = machine.Pin(cs, machine.Pin.OUT)
         self.cs.value(1)
+        
+        self.otherCS = machine.Pin(18)
 
         self.spi_bus = machine.SPI.Bus(
             host=1,
@@ -65,9 +67,11 @@ class AD9833:
         # print(data)
         data = bytearray(data)  # creates buffer object
 
+        self.otherCS.value(1)
         self.cs.value(0)
         self.spi.write(data)
         self.cs.value(1)
+        self.otherCS.value(0)
         return
 
     def set_control_reg(self, B28=1, HLB=0, FS=0, PS=0, RESET=0, SLP1=0, SLP12=0, OP=0, DIV2=0, MODE=0):

@@ -55,8 +55,6 @@ _LCD_FREQ = 4000000
 _OFFSET_X = 2
 _OFFSET_Y = 3
 
-temp = machine.Pin(_LCD_CS, machine.Pin.OUT)
-
 print('s1')
 spi_bus = machine.SPI.Bus(
     host=_HOST,
@@ -64,17 +62,16 @@ spi_bus = machine.SPI.Bus(
     # miso=_MISO,
     sck=_SCK
 )
-
-ad9833 = AD9833.AD9833(sdo = 4, clk = 3, cs = 2,  fmclk = 25)
-
-temp.value(0)
-print('s2')
 display_bus = lcd_bus.SPIBus(
     spi_bus=spi_bus,
     freq=_LCD_FREQ,
     dc=_DC,
     cs=_LCD_CS,
 )
+
+ad9833 = AD9833.AD9833(sdo = 4, clk = 3, cs = 2,  fmclk = 25)
+
+print('s2')
 
 print('s3')
 display = st7735.ST7735(
