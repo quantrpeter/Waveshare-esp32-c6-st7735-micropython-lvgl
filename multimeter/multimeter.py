@@ -71,9 +71,6 @@ display_bus = lcd_bus.SPIBus(
 
 ad9833 = AD9833.AD9833(sdo = 4, clk = 3, cs = 2,  fmclk = 25)
 
-print('s2')
-
-print('s3')
 display = st7735.ST7735(
     data_bus=display_bus,
     display_width=_WIDTH,
