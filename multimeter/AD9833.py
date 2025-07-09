@@ -26,7 +26,6 @@ from math import pi, radians
 import machine
 import utime as time
 
-
 class AD9833:
 
     def __init__(self, sdo, clk, cs, fmclk=25):
