@@ -50,7 +50,7 @@ _SCK = 22  # SCL
 _HOST = 1  # SPI2
 
 _LCD_CS = 18
-_LCD_FREQ = 2000000
+_LCD_FREQ = 4000000
 
 _OFFSET_X = 2
 _OFFSET_Y = 3
@@ -127,20 +127,20 @@ drawMenu()
 # display_bus.deinit()
 
 # ad9833 = AD9833.AD9833(sdo = 4, clk = 3, cs = 2,  fmclk = 25)
-ad9833.set_frequency(1300,0)
-ad9833.set_frequency(2600, 1)
+ad9833.set_frequency(1300, 0)
+# ad9833.set_frequency(2600, 1)
 ad9833.set_phase(0, 0, rads = False)
 ad9833.set_phase(180, 1, rads = False)
 
-time.sleep(1.5)
+time.sleep(0.5)
 
-ad9833.select_freq_phase(0,0)
-ad9833.set_mode('SIN')
-time.sleep(2)
+# ad9833.select_freq_phase(0,0)
+# ad9833.set_mode('SIN')
+# time.sleep(2)
 
 ad9833.set_mode('SQUARE')
 # ad9833.disable()
-time.sleep(2)
+# time.sleep(2)
 
 # temp.value(0)
 # time.sleep(200)
@@ -155,11 +155,12 @@ while True:
         print(selected)
         drawMenu()
         lv.refr_now(lv.screen_active().get_display())
-        ad9833.select_freq_phase(0,0)
+        # ad9833.select_freq_phase(0,0)
         ad9833.set_mode('SIN')
     if not button1.value():
         selected = (selected - 1) % 2
         print(selected)
         drawMenu()
         lv.refr_now(lv.screen_active().get_display())
+        ad9833.set_frequency(9000, 0)
         ad9833.set_mode('SQUARE/2')

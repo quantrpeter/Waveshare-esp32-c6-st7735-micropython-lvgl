@@ -57,20 +57,12 @@ class AD9833:
         self.freq1 = 0
         self.phase0 = 0
         self.phase1 = 0
-        print('init 1')
         return
-    
-    # def disable(self):
-        # self.cs.value(1)  # Set CS pin high to disable AD9833
-        # print('Disabling AD9833')
-        # print(self.cs.value())
-        # return
 
     def write_data(self, data):
         """write_data, function to write data to
         the AD983x chip"""
 
-        print('init 2')
         # print(data)
         data = bytearray(data)  # creates buffer object
 
@@ -83,7 +75,6 @@ class AD9833:
         """set_control_reg, function to set any/all of the bits
         of the AD9833 control register"""
 
-        print('init 3')
         self.B28 = B28
         self.HLB = HLB
         self.FS = FS
