@@ -176,26 +176,28 @@ ad9833.set_mode('SQUARE')
 # temp.value(0)
 # time.sleep(200)
 
+preSelected = -1
 print("end")
 while True:
     time.sleep_ms(20)
     lv.task_handler()
-    sleep(0.2)
+    # sleep(0.1)
     if not button0.value():  # Button pressed
         selected = (selected - 1) % 3
-        print(selected)
         drawMenu()
+        lv.refr_now(lv.screen_active().get_display())
     if not button1.value():  # Button pressed
         selected = (selected + 1) % 3
-        print(selected)
         drawMenu()
-    lv.refr_now(lv.screen_active().get_display())
-    if selected == 0:
-        ad9833.set_frequency(9000, 0)
-        ad9833.set_mode('SQUARE')
-    if selected == 1:
-        ad9833.set_frequency(1300, 0)
-        ad9833.set_mode('TRIANGLE')
-    if selected == 2:
-        # ad9833.select_freq_phase(0,0)
-        ad9833.set_mode('SIN')
+        lv.refr_now(lv.screen_active().get_display())
+    if preSelected != selected:
+        preSelected = selected
+        if selected == 0:
+            ad9833.set_frequency(9000, 0)
+            ad9833.set_mode('SQUARE')
+        if selected == 1:
+            ad9833.set_frequency(1300, 0)
+            ad9833.set_mode('TRIANGLE')
+        if selected == 2:
+            # ad9833.select_freq_phase(0,0)
+            ad9833.set_mode('SIN')
