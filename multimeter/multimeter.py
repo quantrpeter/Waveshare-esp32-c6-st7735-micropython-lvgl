@@ -69,7 +69,7 @@ def drawMenu():
     # --- Display frequency in next row ---
     global freq_label
     freq_label = lv.label(scrn)
-    freq_label.set_pos(10, 85)
+    freq_label.set_pos(10, 95)
     freq_label.set_style_text_color(lv.color_hex(0xffffff), 0)
     freq_label.set_style_text_font(lv.font_montserrat_16, 0)
     freq_label.set_text(f"{current_freq} Hz")
@@ -176,28 +176,26 @@ ad9833.set_mode('SQUARE')
 # temp.value(0)
 # time.sleep(200)
 
-preSelected = -1
 print("end")
 while True:
     time.sleep_ms(20)
     lv.task_handler()
-    # sleep(0.1)
+    sleep(0.2)
     if not button0.value():  # Button pressed
         selected = (selected - 1) % 3
+        print(selected)
         drawMenu()
-        lv.refr_now(lv.screen_active().get_display())
     if not button1.value():  # Button pressed
         selected = (selected + 1) % 3
+        print(selected)
         drawMenu()
-        lv.refr_now(lv.screen_active().get_display())
-    if preSelected != selected:
-        preSelected = selected
-        if selected == 0:
-            ad9833.set_frequency(9000, 0)
-            ad9833.set_mode('SQUARE')
-        if selected == 1:
-            ad9833.set_frequency(1300, 0)
-            ad9833.set_mode('TRIANGLE')
-        if selected == 2:
-            # ad9833.select_freq_phase(0,0)
-            ad9833.set_mode('SIN')
+    lv.refr_now(lv.screen_active().get_display())
+    if selected == 0:
+        ad9833.set_frequency(9000, 0)
+        ad9833.set_mode('SQUARE')
+    if selected == 1:
+        ad9833.set_frequency(1300, 0)
+        ad9833.set_mode('TRIANGLE')
+    if selected == 2:
+        # ad9833.select_freq_phase(0,0)
+        ad9833.set_mode('SIN')
