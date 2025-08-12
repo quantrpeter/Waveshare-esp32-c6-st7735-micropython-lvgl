@@ -4,6 +4,8 @@
 
 https://peter.quantr.hk/2025/07/waveshare-esp32-c6-zero-st7735s/
 
+!!! Read the code, then you know what pins are connected to LCD
+
 ## 128x128 LCD
 
 https://e.tb.cn/h.hTP9hHMJnnsuv3r?tk=8Gu0VAFIgtS
@@ -17,3 +19,12 @@ https://detail.tmall.com/item.htm?app=chrome&bxsign=scd_zKwB5BjniToNIfqwaVQ5hkir
 ## Convert png size to height 20px
 
 python3 -c "from PIL import Image; img=Image.open('semiblock.png'); w,h=img.size; new_height=20; new_width=int(w*(new_height/h)); img=img.resize((new_width,new_height), Image.LANCZOS); img.save('semiblock.png')"
+
+## Resize image to height 20px
+
+sips -Z 20 colorful.png --out colorful20.png
+
+## AD9833 python module
+
+https://github.com/owainm713/AD9833-MicroPython-Module
+
