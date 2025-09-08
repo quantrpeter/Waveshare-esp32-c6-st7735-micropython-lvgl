@@ -180,16 +180,17 @@ print("end")
 while True:
     time.sleep_ms(20)
     lv.task_handler()
-    sleep(0.2)
+    # sleep(0.2)
     if not button0.value():  # Button pressed
         selected = (selected - 1) % 3
         print(selected)
         drawMenu()
+        lv.refr_now(lv.screen_active().get_display())
     if not button1.value():  # Button pressed
         selected = (selected + 1) % 3
         print(selected)
         drawMenu()
-    lv.refr_now(lv.screen_active().get_display())
+        lv.refr_now(lv.screen_active().get_display())
     if selected == 0:
         ad9833.set_frequency(9000, 0)
         ad9833.set_mode('SQUARE')
