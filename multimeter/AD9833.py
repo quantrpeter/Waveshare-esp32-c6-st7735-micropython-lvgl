@@ -169,6 +169,8 @@ class AD9833:
         AD9833 as well as the active frequency and phase registers.
         Valid modes include: 'RESET', 'OFF', 'SIN','TRIANGLE',
         'SQUARE', 'SQUARE/2'"""
+        
+        print(mode)
 
         self.mode = mode
 
@@ -230,7 +232,8 @@ class AD9833:
 if __name__ == "__main__":
 
     # ad9833 = AD9833(sdo = 19, clk = 18, cs = 17,  fmclk = 25)
-    ad9833 = AD9833(sdo=3, clk=2, cs=1,  fmclk=25)
+    # ad9833 = AD9833(sdo=3, clk=2, cs=1,  fmclk=25)
+    ad9833 = AD9833(sdo=8, clk=7, cs=3,  fmclk=25)
 
     delay = 3
 
@@ -240,35 +243,42 @@ if __name__ == "__main__":
     ad9833.set_phase(180, 1, rads=False)
     ad9833.select_freq_phase(0, 0)
     ad9833.set_mode('SIN')
+    print('Sin')
     time.sleep(delay)
 
     ad9833.set_write_mode('LSB')
     ad9833.set_frequency(1200, 0)
+    print('LSB')
     time.sleep(delay)
 
     ad9833.select_freq_phase(1, 0)
     time.sleep(delay)
 
     ad9833.set_mode('TRIANGLE')
+    print('TRIANGLE')
     time.sleep(delay)
 
     # freq 0 Triangle wave output
     ad9833.select_freq_phase(0, 0)
     ad9833.set_mode('TRIANGLE')
+    print('TRIANGLE')
     time.sleep(delay)
 
     # freq 0 Square wave output
     ad9833.set_mode('SQUARE')
+    print('SQUARE')
     time.sleep(delay)
 
     # freq 0 divide by 2 Square wave output
     ad9833.set_mode('SQUARE/2')
+    print('SQUARE/2')
     time.sleep(delay)
 
     # change freq 0 to 1700 Hz, Sin wave output
     ad9833.set_write_mode('BOTH')
     ad9833.set_frequency(1700, 0)
     ad9833.set_mode('SIN')
+    print('SIN')
     time.sleep(delay)
 
     ad9833.set_mode('OFF')
