@@ -41,14 +41,15 @@ class AD9833:
         self.cs = machine.Pin(cs, machine.Pin.OUT)
         self.cs.value(1)
         
-        self.otherCS = machine.Pin(18)
-
-        self.spi_bus = machine.SPI.Bus(
-            host=1,
-            mosi=sdo,
-            sck=clk
+        # Use software SPI to avoid conflicts with LCD hardware SPI
+        self.spi = machine.SoftSPI(
+            baudrate=1000000,  # Lower speed for reliability
+            polarity=1,
+            phase=1,
+            sck=machine.Pin(clk),
+            mosi=machine.Pin(sdo),
+            miso=machine.Pin(-1)  # AD9833 doesn't need MISO
         )
-        self.spi = machine.SPI.Device(spi_bus=self.spi_bus, freq=20000000, cs=cs)
 
         self.set_control_reg(B28=1, RESET=1)
 
@@ -67,11 +68,9 @@ class AD9833:
         # print(data)
         data = bytearray(data)  # creates buffer object
 
-        self.otherCS.value(1)
         self.cs.value(0)
         self.spi.write(data)
         self.cs.value(1)
-        self.otherCS.value(0)
         return
 
     def set_control_reg(self, B28=1, HLB=0, FS=0, PS=0, RESET=0, SLP1=0, SLP12=0, OP=0, DIV2=0, MODE=0):
@@ -235,7 +234,7 @@ if __name__ == "__main__":
     # ad9833 = AD9833(sdo=3, clk=2, cs=1,  fmclk=25)
     ad9833 = AD9833(sdo=8, clk=7, cs=3,  fmclk=25)
 
-    delay = 3
+    delay = 10
 
     ad9833.set_frequency(1100, 0)
     ad9833.set_frequency(2200, 1)

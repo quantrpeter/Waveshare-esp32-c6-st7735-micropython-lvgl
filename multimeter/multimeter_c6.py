@@ -14,6 +14,8 @@ current_freq = 1300
 
 
 def drawMenu():
+    global button1, button2, button3  # Make buttons global so event handlers can access them
+    
     button1 = lv.button(scrn)
     button1.set_pos(0, 30)
     button1.set_size(40, 20)
@@ -25,6 +27,13 @@ def drawMenu():
         button1.set_style_bg_color(
             lv.color_hex(0xffffff), 0)
     label1.center()
+    # Add event handler for SQUARE mode
+    def squ_btn_handler(e):
+        global selected
+        selected = 0
+        drawMenu()
+        lv.refr_now(lv.screen_active().get_display())
+    button1.add_event_cb(squ_btn_handler, lv.EVENT.CLICKED, None)
 
     button2 = lv.button(scrn)
     button2.set_pos(43, 30)
@@ -37,6 +46,13 @@ def drawMenu():
         button2.set_style_bg_color(
             lv.color_hex(0xffffff), 0)
     label2.center()
+    # Add event handler for TRIANGLE mode
+    def tri_btn_handler(e):
+        global selected
+        selected = 1
+        drawMenu()
+        lv.refr_now(lv.screen_active().get_display())
+    button2.add_event_cb(tri_btn_handler, lv.EVENT.CLICKED, None)
 
     button3 = lv.button(scrn)
     button3.set_pos(86, 30)
@@ -49,6 +65,13 @@ def drawMenu():
         button3.set_style_bg_color(
             lv.color_hex(0xffffff), 0)
     label3.center()
+    # Add event handler for SINE mode
+    def sin_btn_handler(e):
+        global selected
+        selected = 2
+        drawMenu()
+        lv.refr_now(lv.screen_active().get_display())
+    button3.add_event_cb(sin_btn_handler, lv.EVENT.CLICKED, None)
 
     # --- Add 6 frequency adjustment buttons below ---
     freq_btn_labels = ["-1k", "-100", "-10", "+10", "+100", "+1k"]
@@ -64,6 +87,16 @@ def drawMenu():
         lbl.set_style_text_color(lv.color_hex(0x000000), 0)
         lbl.set_style_text_font(lv.font_montserrat_12, 0)
         lbl.center()
+        # Add event handler for frequency adjustment
+        def freq_btn_event_handler(e, step=freq_btn_steps[i]):
+            global current_freq
+            current_freq += step
+            if current_freq < 0:
+                current_freq = 0
+            freq_label.set_text(f"{current_freq} Hz")
+            if selected == 2:  # If in SINE mode, update frequency immediately
+                ad9833.set_frequency(current_freq, 0)
+        btn.add_event_cb(freq_btn_event_handler, lv.EVENT.CLICKED, None)
         freq_buttons.append(btn)
 
     # --- Display frequency in next row ---
@@ -157,7 +190,7 @@ drawMenu()
 # temp.value(1)
 # display_bus.deinit()
 
-ad9833 = AD9833.AD9833(sdo=21, clk=22, cs=2,  fmclk=25)
+ad9833 = AD9833.AD9833(sdo=8, clk=7, cs=3,  fmclk=25)
 ad9833.set_frequency(1300, 0)
 # ad9833.set_frequency(2600, 1)
 ad9833.set_phase(0, 0, rads=False)
@@ -199,4 +232,5 @@ while True:
         ad9833.set_mode('TRIANGLE')
     if selected == 2:
         # ad9833.select_freq_phase(0,0)
+        ad9833.set_frequency(current_freq, 0)
         ad9833.set_mode('SIN')
