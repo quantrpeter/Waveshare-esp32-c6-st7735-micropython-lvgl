@@ -4,6 +4,8 @@
 
 https://peter.quantr.hk/2025/07/waveshare-esp32-c6-zero-st7735s/
 
+This repo contain code for C6 and S3
+
 !!! Read the code, then you know what pins are connected to LCD
 
 ## 128x128 LCD
