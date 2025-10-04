@@ -1,26 +1,22 @@
-import lcd_bus
-from micropython import const
-import machine
+from machine import I2C, Pin
 import time
-import AD9833
+from mcp4725 import MCP4725 # Assuming the driver file is named mcp4725.py
 
-# ad9833 = AD9833.AD9833(sdo=22, clk=21, cs=-1, fmclk=20)
-ad9833 = AD9833.AD9833(sdo = 3, clk = 2, cs = 1,  fmclk = 25)
-ad9833.set_frequency(1300, 0)
-# ad9833.set_frequency(2600, 1)
-ad9833.set_phase(0, 0, rads=False)
-ad9833.set_phase(180, 1, rads=False)
+# Initialize I2C (adjust pins and frequency as needed for your board)
+i2c = I2C(0, scl=Pin(2), sda=Pin(1), freq=100000) 
 
-time.sleep(0.5)
+# Create an MCP4725 object with the I2C address (default is 0x60)
+dac = MCP4725(i2c, address=0x60)
 
-# ad9833.select_freq_phase(0,0)
-# ad9833.set_mode('SIN')
-# time.sleep(2)
+# Set the DAC output voltage
+# You can set the raw 12-bit value (0-4095)
+dac.raw_value = 2048 # Sets output to roughly half of VCC
 
-ad9833.set_mode('SQUARE')
-# ad9833.disable()
-# time.sleep(2)
+# Or set a normalized value (0.0-1.0)
+# dac.normalized_value = 0.5 
+
+# Or set a value using a 16-bit range (0-65535), though it's a 12-bit DAC
+# dac.value = 32767 
 
 while True:
-	time.usleep(100)
-
+    time.msleep(100)
