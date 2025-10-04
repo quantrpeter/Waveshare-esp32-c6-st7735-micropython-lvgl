@@ -104,6 +104,7 @@ class AD9833:
 
         # calculate frequncy register value from fout
         freqR = int((fout*pow(2, 28))/self.fmclk)
+        print('freqR=', freqR)
 
         # split frequency register value into 2
         # 14 bit segments
