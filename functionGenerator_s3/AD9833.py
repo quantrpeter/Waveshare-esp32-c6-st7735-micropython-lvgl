@@ -277,7 +277,7 @@ if __name__ == "__main__":
     ad9833.set_write_mode('BOTH')
     ad9833.set_frequency(1700, 0)
     ad9833.set_mode('SIN')
-    print('SIN')
+    print('BOTH')
     time.sleep(delay)
 
     ad9833.set_mode('OFF')
