@@ -71,6 +71,7 @@ class AD9833:
         self.cs.value(0)
         self.spi.write(data)
         self.cs.value(1)
+        
         return
 
     def set_control_reg(self, B28=1, HLB=0, FS=0, PS=0, RESET=0, SLP1=0, SLP12=0, OP=0, DIV2=0, MODE=0):
@@ -104,7 +105,6 @@ class AD9833:
 
         # calculate frequncy register value from fout
         freqR = int((fout*pow(2, 28))/self.fmclk)
-        print('freqR=', freqR)
 
         # split frequency register value into 2
         # 14 bit segments

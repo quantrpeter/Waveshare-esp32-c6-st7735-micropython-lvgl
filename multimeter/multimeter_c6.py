@@ -13,7 +13,7 @@ import AD9833
 # AD9833 c6 zero
 AD9833_SDO = 1
 AD9833_CLK = 2
-AD9833_CS = 0
+AD9833_CS = 22
 
 
 # display settings
@@ -40,6 +40,7 @@ ROTATE_BUTTON_S2 = 3
 selected = 0
 selectedFreqBtn = 0
 currentFreq = 4000
+currentPhase = 0  # Current phase in degrees
 
 
 def format_frequency(freq):
@@ -99,10 +100,6 @@ display = st7735.ST7735(
     offset_y=_OFFSET_Y
 )
 
-print('s4')
-
-print('s4')
-
 # Initialize display
 display.init(st7735.TYPE_R_RED)
 display.set_rotation(lv.DISPLAY_ROTATION._180)
@@ -116,7 +113,7 @@ fs_drv = lv.fs_drv_t()
 fs_register(fs_drv, "S")
 
 img = lv.image(scrn)
-img.set_src("S:colorful20.png")
+img.set_src("S:blue.png")
 img.set_size(20, 20)
 img.set_pos(0, 5)
 
@@ -153,12 +150,14 @@ freqLbl.set_style_text_font(lv.font_montserrat_12, 0)
 freqLbl.center()
 menu_buttons.append(btn)
 
-for i, label in enumerate(["1Hz", "10Hz", "100Hz", "1kHz", "10kHz", "1MHz"]):
+for i, label in enumerate(["1Hz", "10Hz", "100Hz", "1kHz", "10kHz", "1MHz", "PHASE"]):
     btn = lv.button(scrn)
     if i < 3:
         btn.set_pos(i*40+i*3, 55)
-    else:
+    elif i < 6:
         btn.set_pos((i-3)*40+(i-3)*3, 80)
+    else:  # Phase button
+        btn.set_pos((i-6)*40+(i-6)*3, 105)
     btn.set_size(40, 20)
     lbl = lv.label(btn)
     lbl.set_text(label)
@@ -170,10 +169,17 @@ for i, label in enumerate(["1Hz", "10Hz", "100Hz", "1kHz", "10kHz", "1MHz"]):
 
 # --- Create frequency label once ---
 freq_label = lv.label(scrn)
-freq_label.set_pos(10, 105)
+freq_label.set_pos(10, 100)
 freq_label.set_style_text_color(lv.color_hex(0xffffff), 0)
 freq_label.set_style_text_font(lv.font_montserrat_16, 0)
 freq_label.set_text(format_frequency(currentFreq))
+
+# --- Create phase label ---
+phase_label = lv.label(scrn)
+phase_label.set_pos(10, 115)
+phase_label.set_style_text_color(lv.color_hex(0xffffff), 0)
+phase_label.set_style_text_font(lv.font_montserrat_12, 0)
+phase_label.set_text(f"Phase: {currentPhase}°")
 
 drawMenu()
 
@@ -182,14 +188,12 @@ drawMenu()
 
 ad9833 = AD9833.AD9833(sdo=AD9833_SDO, clk=AD9833_CLK, cs=AD9833_CS,  fmclk=25)
 ad9833.set_frequency(currentFreq, 0)
-# ad9833.set_frequency(2600, 1)
-# ad9833.set_phase(0, 0, rads = False)
-# ad9833.set_phase(180, 1, rads = False)
-# ad9833.select_freq_phase(0,0)
+ad9833.set_phase(currentPhase, 0, rads=False)
+ad9833.set_phase((currentPhase + 180) % 360, 1, rads=False)
+ad9833.select_freq_phase(0, 0)
 ad9833.set_mode('SQUARE')
 time.sleep(0.5)
 
-print("end")
 drawMenu()
 lv.refr_now(lv.screen_active().get_display())
 lv.task_handler()
@@ -231,7 +235,7 @@ while True:
                 lv.refr_now(lv.screen_active().get_display())
                 lv.task_handler()
                 b = True
-        elif selected > 0 and rotary_s1_prev == 1 and s1 == 0:  # S1 falling edge
+        elif selected > 0 and selected < 7 and rotary_s1_prev == 1 and s1 == 0:  # S1 falling edge
             if s2 == 0:  # Clockwise
                 print(f"Rotary CW: selected {selected}")
                 if selected == 1:
@@ -252,7 +256,7 @@ while True:
                 lv.refr_now(lv.screen_active().get_display())
                 lv.task_handler()
                 b = True
-        elif selected > 0 and rotary_s2_prev == 1 and s2 == 0:  # S2 falling edge
+        elif selected > 0 and selected < 7 and rotary_s2_prev == 1 and s2 == 0:  # S2 falling edge
             if s1 == 0:  # Counter-clockwise
                 if selected == 1:
                     currentFreq -= 1
@@ -272,21 +276,35 @@ while True:
                 lv.refr_now(lv.screen_active().get_display())
                 lv.task_handler()
                 b = True
+        elif selected == 7 and rotary_s1_prev == 1 and s1 == 0:  # Phase adjustment - S1 falling edge
+            if s2 == 0:  # Clockwise - increase phase
+                currentPhase = (currentPhase + 10) % 360
+                phase_label.set_text(f"Phase: {currentPhase}°")
+                lv.refr_now(lv.screen_active().get_display())
+                lv.task_handler()
+                b = True
+        elif selected == 7 and rotary_s2_prev == 1 and s2 == 0:  # Phase adjustment - S2 falling edge
+            if s1 == 0:  # Counter-clockwise - decrease phase
+                currentPhase = (currentPhase - 10) % 360
+                phase_label.set_text(f"Phase: {currentPhase}°")
+                lv.refr_now(lv.screen_active().get_display())
+                lv.task_handler()
+                b = True
 
         rotary_s1_prev = s1
         rotary_s2_prev = s2
         time.sleep_ms(10)  # Debounce delay
-        
-	
+
     if b:
-        print(currentFreqLabelIndex, currentFreq)
+        print(currentFreqLabelIndex, currentFreq, currentPhase)
         if currentFreqLabelIndex == 0:
             ad9833.set_frequency(currentFreq, 0)
+            # ad9833.select_freq_phase(0, 0)
             ad9833.set_mode('SQUARE')
         elif currentFreqLabelIndex == 1:
             ad9833.set_frequency(currentFreq, 0)
-            ad9833.set_phase(0, 0, rads=False)
-            ad9833.set_phase(180, 1, rads=False)
+            ad9833.set_phase((currentPhase % 360) * 10, 0, rads=False)
+            # # ad9833.set_phase((currentPhase + 180) % 360, 1, rads=False)
             ad9833.select_freq_phase(0, 0)
             ad9833.set_mode('SIN')
         elif currentFreqLabelIndex == 2:
