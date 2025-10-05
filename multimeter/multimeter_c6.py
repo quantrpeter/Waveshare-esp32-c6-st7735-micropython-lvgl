@@ -42,6 +42,24 @@ selectedFreqBtn = 0
 currentFreq = 4000
 
 
+def format_frequency(freq):
+    """Format frequency display with appropriate units"""
+    if freq < 1000:
+        return f"{freq} Hz"
+    elif freq < 1000000:
+        khz = freq / 1000.0
+        if freq % 1000 == 0:
+            return f"{khz} kHz"
+        else:
+            return f"{khz:.3f} kHz"
+    else:
+        mhz = freq / 1000000.0
+        if freq % 1000000 == 0:
+            return f"{mhz} MHz"
+        else:
+            return f"{mhz:.6f} MHz"
+
+
 def drawMenu():
     # Only update button backgrounds and frequency label
     global menu_buttons, selected
@@ -135,7 +153,7 @@ freqLbl.set_style_text_font(lv.font_montserrat_12, 0)
 freqLbl.center()
 menu_buttons.append(btn)
 
-for i, label in enumerate(["1", "10", "100", "1k", "10k", "100k"]):
+for i, label in enumerate(["1Hz", "10Hz", "100Hz", "1kHz", "10kHz", "1MHz"]):
     btn = lv.button(scrn)
     if i < 3:
         btn.set_pos(i*40+i*3, 55)
@@ -155,7 +173,7 @@ freq_label = lv.label(scrn)
 freq_label.set_pos(10, 105)
 freq_label.set_style_text_color(lv.color_hex(0xffffff), 0)
 freq_label.set_style_text_font(lv.font_montserrat_16, 0)
-freq_label.set_text(f"{currentFreq} Hz")
+freq_label.set_text(format_frequency(currentFreq))
 
 drawMenu()
 
@@ -165,10 +183,10 @@ drawMenu()
 ad9833 = AD9833.AD9833(sdo=AD9833_SDO, clk=AD9833_CLK, cs=AD9833_CS,  fmclk=25)
 ad9833.set_frequency(currentFreq, 0)
 # ad9833.set_frequency(2600, 1)
-ad9833.set_phase(0, 0, rads = False)
-ad9833.set_phase(180, 1, rads = False)
-ad9833.select_freq_phase(0,0)
-ad9833.set_mode('SIN')
+# ad9833.set_phase(0, 0, rads = False)
+# ad9833.set_phase(180, 1, rads = False)
+# ad9833.select_freq_phase(0,0)
+ad9833.set_mode('SQUARE')
 time.sleep(0.5)
 
 print("end")
@@ -227,10 +245,10 @@ while True:
                 elif selected == 5:
                     currentFreq += 10000
                 elif selected == 6:
-                    currentFreq += 100000
+                    currentFreq += 1000000
                 if currentFreq > 12600000:
                     currentFreq = 12600000
-                freq_label.set_text(f"{currentFreq} Hz")
+                freq_label.set_text(format_frequency(currentFreq))
                 lv.refr_now(lv.screen_active().get_display())
                 lv.task_handler()
                 b = True
@@ -247,10 +265,10 @@ while True:
                 elif selected == 5:
                     currentFreq -= 10000
                 elif selected == 6:
-                    currentFreq -= 100000
+                    currentFreq -= 1000000
                 if currentFreq < 0:
                     currentFreq = 0
-                freq_label.set_text(f"{currentFreq} Hz")
+                freq_label.set_text(format_frequency(currentFreq))
                 lv.refr_now(lv.screen_active().get_display())
                 lv.task_handler()
                 b = True
