@@ -51,13 +51,15 @@ class AD9833:
         #     miso=machine.Pin(0)  # AD9833 doesn't need MISO
         # )
         
-        _HOST=2  # Use separate SPI host to avoid conflicts with LCD
+        _HOST=1  # Use separate SPI host to avoid conflicts with LCD
         self.spi = machine.SPI.Bus(
             host=_HOST,
             sck=machine.Pin(clk),
             mosi=machine.Pin(sdo),
             # miso=machine.Pin(0)  # AD9833 doesn't need MISO
         )
+        # self.spi = machine.SPI(_HOST, baudrate = 4000000, polarity = 1, phase = 1, sck= self.clk, mosi = self.sdo)      
+
 
         self.set_control_reg(B28=1, RESET=1)
 

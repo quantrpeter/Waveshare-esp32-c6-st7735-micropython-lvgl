@@ -11,14 +11,14 @@ import AD9833
 
 
 # AD9833 c6 zero
-AD9833_SDO = 1
-AD9833_CLK = 2
-AD9833_CS = 22
+# AD9833_SDO = 1
+# AD9833_CLK = 2
+# AD9833_CS = 22
 
 # AD9833 c6 zero
-# AD9833_SDO = 15
-# AD9833_CLK = 14
-# AD9833_CS = 22
+AD9833_SDO = 15
+AD9833_CLK = 14
+AD9833_CS = 22
 
 # display settings
 _WIDTH = 128
@@ -111,6 +111,7 @@ display.set_backlight(100)
 # Create screen
 scrn = lv.screen_active()
 scrn.set_style_bg_color(lv.color_hex(0x000000), 0)
+scrn.set_scrollbar_mode(lv.SCROLLBAR_MODE.OFF)
 
 fs_drv = lv.fs_drv_t()
 fs_register(fs_drv, "S")
@@ -204,7 +205,7 @@ ad9833.set_phase(currentPhase, 0, rads=False)
 ad9833.set_phase((currentPhase + 180) % 360, 1, rads=False)
 ad9833.select_freq_phase(0, 0)
 ad9833.set_mode('SQUARE')
-time.sleep(0.5)
+time.sleep(2)
 
 drawMenu()
 lv.refr_now(lv.screen_active().get_display())
