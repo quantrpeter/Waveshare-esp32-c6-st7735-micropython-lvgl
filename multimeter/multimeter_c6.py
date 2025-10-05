@@ -9,16 +9,15 @@ from fs_driver import fs_register
 from machine import Pin
 import AD9833
 
-
 # AD9833 c6 zero
-# AD9833_SDO = 1
-# AD9833_CLK = 2
-# AD9833_CS = 22
-
-# AD9833 c6 zero
-AD9833_SDO = 15
-AD9833_CLK = 14
+AD9833_SDO = 1
+AD9833_CLK = 2
 AD9833_CS = 22
+
+# AD9833 c6 zero
+# AD9833_SDO = 15
+# AD9833_CLK = 14
+# AD9833_CS = 22
 
 # display settings
 _WIDTH = 128
