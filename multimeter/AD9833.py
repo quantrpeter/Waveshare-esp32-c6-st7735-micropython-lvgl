@@ -42,13 +42,21 @@ class AD9833:
         self.cs.value(1)
         
         # Use software SPI to avoid conflicts with LCD hardware SPI
-        self.spi = machine.SoftSPI(
-            baudrate=1000000,  # Lower speed for reliability
-            polarity=1,
-            phase=1,
+        # self.spi = machine.SoftSPI(
+        #     baudrate=1000000,  # Lower speed for reliability
+        #     polarity=1,
+        #     phase=1,
+        #     sck=machine.Pin(clk),
+        #     mosi=machine.Pin(sdo),
+        #     miso=machine.Pin(0)  # AD9833 doesn't need MISO
+        # )
+        
+        _HOST=2  # Use separate SPI host to avoid conflicts with LCD
+        self.spi = machine.SPI.Bus(
+            host=_HOST,
             sck=machine.Pin(clk),
             mosi=machine.Pin(sdo),
-            miso=machine.Pin(0)  # AD9833 doesn't need MISO
+            # miso=machine.Pin(0)  # AD9833 doesn't need MISO
         )
 
         self.set_control_reg(B28=1, RESET=1)
