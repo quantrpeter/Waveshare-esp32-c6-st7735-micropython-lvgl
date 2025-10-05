@@ -9,124 +9,49 @@ from fs_driver import fs_register
 from machine import Pin
 import AD9833
 
-selected = 0
-current_freq = 1300
 
-
-def drawMenu():
-    global button1, button2, button3  # Make buttons global so event handlers can access them
-    
-    button1 = lv.button(scrn)
-    button1.set_pos(0, 30)
-    button1.set_size(40, 20)
-    label1 = lv.label(button1)
-    label1.set_text("SQU")
-    label1.set_style_text_color(lv.color_hex(0x000000), 0)  # Black text
-    label1.set_style_text_font(lv.font_montserrat_12, 0)
-    if selected == 0:
-        button1.set_style_bg_color(
-            lv.color_hex(0xffffff), 0)
-    label1.center()
-    # Add event handler for SQUARE mode
-    def squ_btn_handler(e):
-        global selected
-        selected = 0
-        drawMenu()
-        lv.refr_now(lv.screen_active().get_display())
-    button1.add_event_cb(squ_btn_handler, lv.EVENT.CLICKED, None)
-
-    button2 = lv.button(scrn)
-    button2.set_pos(43, 30)
-    button2.set_size(40, 20)
-    label2 = lv.label(button2)
-    label2.set_text("Tri")
-    label2.set_style_text_color(lv.color_hex(0x000000), 0)  # Black text
-    label2.set_style_text_font(lv.font_montserrat_12, 0)
-    if selected == 1:
-        button2.set_style_bg_color(
-            lv.color_hex(0xffffff), 0)
-    label2.center()
-    # Add event handler for TRIANGLE mode
-    def tri_btn_handler(e):
-        global selected
-        selected = 1
-        drawMenu()
-        lv.refr_now(lv.screen_active().get_display())
-    button2.add_event_cb(tri_btn_handler, lv.EVENT.CLICKED, None)
-
-    button3 = lv.button(scrn)
-    button3.set_pos(86, 30)
-    button3.set_size(40, 20)
-    label3 = lv.label(button3)
-    label3.set_text("SINE")
-    label3.set_style_text_color(lv.color_hex(0x000000), 0)  # Black text
-    label3.set_style_text_font(lv.font_montserrat_12, 0)
-    if selected == 2:
-        button3.set_style_bg_color(
-            lv.color_hex(0xffffff), 0)
-    label3.center()
-    # Add event handler for SINE mode
-    def sin_btn_handler(e):
-        global selected
-        selected = 2
-        drawMenu()
-        lv.refr_now(lv.screen_active().get_display())
-    button3.add_event_cb(sin_btn_handler, lv.EVENT.CLICKED, None)
-
-    # --- Add 6 frequency adjustment buttons below ---
-    freq_btn_labels = ["-1k", "-100", "-10", "+10", "+100", "+1k"]
-    freq_btn_steps = [-1000, -100, -10, 10, 100, 1000]
-    global freq_buttons
-    freq_buttons = []
-    for i, label in enumerate(freq_btn_labels):
-        btn = lv.button(scrn)
-        btn.set_pos(2 + i*21, 60)
-        btn.set_size(20, 20)
-        lbl = lv.label(btn)
-        lbl.set_text(label)
-        lbl.set_style_text_color(lv.color_hex(0x000000), 0)
-        lbl.set_style_text_font(lv.font_montserrat_12, 0)
-        lbl.center()
-        # Add event handler for frequency adjustment
-        def freq_btn_event_handler(e, step=freq_btn_steps[i]):
-            global current_freq
-            current_freq += step
-            if current_freq < 0:
-                current_freq = 0
-            freq_label.set_text(f"{current_freq} Hz")
-            if selected == 2:  # If in SINE mode, update frequency immediately
-                ad9833.set_frequency(current_freq, 0)
-        btn.add_event_cb(freq_btn_event_handler, lv.EVENT.CLICKED, None)
-        freq_buttons.append(btn)
-
-    # --- Display frequency in next row ---
-    global freq_label
-    freq_label = lv.label(scrn)
-    freq_label.set_pos(10, 95)
-    freq_label.set_style_text_color(lv.color_hex(0xffffff), 0)
-    freq_label.set_style_text_font(lv.font_montserrat_16, 0)
-    freq_label.set_text(f"{current_freq} Hz")
+# AD9833 c6 zero
+AD9833_SDO = 1
+AD9833_CLK = 2
+AD9833_CS = 0
 
 
 # display settings
 _WIDTH = 128
 _HEIGHT = 128
-_BL = 19
-_RST = 14
-_DC = 15
+_BL = 21
+_RST = 18
+_DC = 19
 
-_MOSI = 21  # SDA
+_MOSI = 15  # SDA
 # _MISO = 20
-_SCK = 22  # SCL
+_SCK = 14  # SCL
 _HOST = 1  # SPI2
-
-_LCD_CS = 18
+_LCD_CS = 20
 _LCD_FREQ = 4000000
-
 _OFFSET_X = 2
 _OFFSET_Y = 3
 
-print('s1')
+# Buttons
+BUTTON0 = 4
+ROTATE_BUTTON_S1 = 5
+ROTATE_BUTTON_S2 = 3
+
+selected = 0
+selectedFreqBtn = 0
+currentFreq = 4000
+
+
+def drawMenu():
+    # Only update button backgrounds and frequency label
+    global menu_buttons, selected
+    for i, btn in enumerate(menu_buttons):
+        if i == selected:
+            btn.set_style_bg_color(lv.color_hex(0xffffff), 0)
+        else:
+            btn.set_style_bg_color(lv.color_hex(0x8888dd), 0)
+
+
 spi_bus = machine.SPI.Bus(
     host=_HOST,
     mosi=_MOSI,
@@ -158,6 +83,8 @@ display = st7735.ST7735(
 
 print('s4')
 
+print('s4')
+
 # Initialize display
 display.init(st7735.TYPE_R_RED)
 display.set_rotation(lv.DISPLAY_ROTATION._180)
@@ -182,55 +109,169 @@ label.set_pos(24, 8)
 label.set_style_text_color(lv.color_hex(0xffffff), 0)
 label.set_style_text_font(lv.font_montserrat_12, 0)
 
-button0 = Pin(20, Pin.IN, Pin.PULL_UP)  # Button pin
-button1 = Pin(5, Pin.IN, Pin.PULL_UP)  # Button pin
+button0 = Pin(BUTTON0, Pin.IN, Pin.PULL_UP)  # Button pin
+
+# Rotary encoder pins
+rotary_s1 = Pin(ROTATE_BUTTON_S1, Pin.IN, Pin.PULL_UP)
+rotary_s2 = Pin(ROTATE_BUTTON_S2, Pin.IN, Pin.PULL_UP)
+
+# Initialize rotary encoder state
+rotary_s1_prev = rotary_s1.value()
+rotary_s2_prev = rotary_s2.value()
+
+# --- Create menu buttons and labels once ---
+
+freq = ["SQU", "SIN", "TRI"]
+currentFreqLabelIndex = 0
+
+menu_buttons = []
+btn = lv.button(scrn)
+btn.set_pos(0, 30)
+btn.set_size(125, 20)
+freqLbl = lv.label(btn)
+freqLbl.set_text(freq[0])
+freqLbl.set_style_text_color(lv.color_hex(0x000000), 0)
+freqLbl.set_style_text_font(lv.font_montserrat_12, 0)
+freqLbl.center()
+menu_buttons.append(btn)
+
+for i, label in enumerate(["1", "10", "100", "1k", "10k", "100k"]):
+    btn = lv.button(scrn)
+    if i < 3:
+        btn.set_pos(i*40+i*3, 55)
+    else:
+        btn.set_pos((i-3)*40+(i-3)*3, 80)
+    btn.set_size(40, 20)
+    lbl = lv.label(btn)
+    lbl.set_text(label)
+    lbl.set_style_text_color(lv.color_hex(0x000000), 0)
+    lbl.set_style_text_font(lv.font_montserrat_12, 0)
+    lbl.center()
+    menu_buttons.append(btn)
+
+
+# --- Create frequency label once ---
+freq_label = lv.label(scrn)
+freq_label.set_pos(10, 105)
+freq_label.set_style_text_color(lv.color_hex(0xffffff), 0)
+freq_label.set_style_text_font(lv.font_montserrat_16, 0)
+freq_label.set_text(f"{currentFreq} Hz")
 
 drawMenu()
 
 # temp.value(1)
 # display_bus.deinit()
 
-ad9833 = AD9833.AD9833(sdo=8, clk=7, cs=3,  fmclk=25)
-ad9833.set_frequency(1300, 0)
+ad9833 = AD9833.AD9833(sdo=AD9833_SDO, clk=AD9833_CLK, cs=AD9833_CS,  fmclk=25)
+ad9833.set_frequency(currentFreq, 0)
 # ad9833.set_frequency(2600, 1)
-ad9833.set_phase(0, 0, rads=False)
-ad9833.set_phase(180, 1, rads=False)
-
+ad9833.set_phase(0, 0, rads = False)
+ad9833.set_phase(180, 1, rads = False)
+ad9833.select_freq_phase(0,0)
+ad9833.set_mode('SIN')
 time.sleep(0.5)
 
-# ad9833.select_freq_phase(0,0)
-# ad9833.set_mode('SIN')
-# time.sleep(2)
-
-ad9833.set_mode('SQUARE')
-# ad9833.disable()
-# time.sleep(2)
-
-# temp.value(0)
-# time.sleep(200)
-
 print("end")
+drawMenu()
+lv.refr_now(lv.screen_active().get_display())
+lv.task_handler()
 while True:
-    time.sleep_ms(20)
-    lv.task_handler()
+    # time.sleep_ms(20)
     # sleep(0.2)
+    b = False
+
+    # Button handling
     if not button0.value():  # Button pressed
-        selected = (selected - 1) % 3
+        selected = (selected + 1) % len(menu_buttons)
         print(selected)
         drawMenu()
         lv.refr_now(lv.screen_active().get_display())
-    if not button1.value():  # Button pressed
-        selected = (selected + 1) % 3
-        print(selected)
-        drawMenu()
-        lv.refr_now(lv.screen_active().get_display())
-    if selected == 0:
-        ad9833.set_frequency(9000, 0)
-        ad9833.set_mode('SQUARE')
-    if selected == 1:
-        ad9833.set_frequency(1300, 0)
-        ad9833.set_mode('TRIANGLE')
-    if selected == 2:
-        # ad9833.select_freq_phase(0,0)
-        ad9833.set_frequency(current_freq, 0)
-        ad9833.set_mode('SIN')
+        lv.task_handler()
+        b = True
+        while not button0.value():
+            pass  # Wait for release (debounce)
+
+    # Rotary encoder handling
+    s1 = rotary_s1.value()
+    s2 = rotary_s2.value()
+
+    if s1 != rotary_s1_prev or s2 != rotary_s2_prev:
+        # Detect rotation direction
+        if selected == 0 and rotary_s1_prev == 1 and s1 == 0:  # S1 falling edge
+            if s2 == 0:  # Clockwise
+                currentFreqLabelIndex = (currentFreqLabelIndex + 1) % len(freq)
+                print(f"Rotary CW: selected {selected}")
+                freqLbl.set_text(freq[currentFreqLabelIndex])
+                lv.refr_now(lv.screen_active().get_display())
+                lv.task_handler()
+                b = True
+        elif selected == 0 and rotary_s2_prev == 1 and s2 == 0:  # S2 falling edge
+            if s1 == 0:  # Counter-clockwise
+                currentFreqLabelIndex = (currentFreqLabelIndex - 1) % len(freq)
+                print(f"Rotary CCW: selected {selected}")
+                freqLbl.set_text(freq[currentFreqLabelIndex])
+                lv.refr_now(lv.screen_active().get_display())
+                lv.task_handler()
+                b = True
+        elif selected > 0 and rotary_s1_prev == 1 and s1 == 0:  # S1 falling edge
+            if s2 == 0:  # Clockwise
+                print(f"Rotary CW: selected {selected}")
+                if selected == 1:
+                    currentFreq += 1
+                elif selected == 2:
+                    currentFreq += 10
+                elif selected == 3:
+                    currentFreq += 100
+                elif selected == 4:
+                    currentFreq += 1000
+                elif selected == 5:
+                    currentFreq += 10000
+                elif selected == 6:
+                    currentFreq += 100000
+                if currentFreq > 12600000:
+                    currentFreq = 12600000
+                freq_label.set_text(f"{currentFreq} Hz")
+                lv.refr_now(lv.screen_active().get_display())
+                lv.task_handler()
+                b = True
+        elif selected > 0 and rotary_s2_prev == 1 and s2 == 0:  # S2 falling edge
+            if s1 == 0:  # Counter-clockwise
+                if selected == 1:
+                    currentFreq -= 1
+                elif selected == 2:
+                    currentFreq -= 10
+                elif selected == 3:
+                    currentFreq -= 100
+                elif selected == 4:
+                    currentFreq -= 1000
+                elif selected == 5:
+                    currentFreq -= 10000
+                elif selected == 6:
+                    currentFreq -= 100000
+                if currentFreq < 0:
+                    currentFreq = 0
+                freq_label.set_text(f"{currentFreq} Hz")
+                lv.refr_now(lv.screen_active().get_display())
+                lv.task_handler()
+                b = True
+
+        rotary_s1_prev = s1
+        rotary_s2_prev = s2
+        time.sleep_ms(10)  # Debounce delay
+        
+	
+    if b:
+        print(currentFreqLabelIndex, currentFreq)
+        if currentFreqLabelIndex == 0:
+            ad9833.set_frequency(currentFreq, 0)
+            ad9833.set_mode('SQUARE')
+        elif currentFreqLabelIndex == 1:
+            ad9833.set_frequency(currentFreq, 0)
+            ad9833.set_phase(0, 0, rads=False)
+            ad9833.set_phase(180, 1, rads=False)
+            ad9833.select_freq_phase(0, 0)
+            ad9833.set_mode('SIN')
+        elif currentFreqLabelIndex == 2:
+            ad9833.select_freq_phase(0, 0)
+            ad9833.set_frequency(currentFreq, 0)
+            ad9833.set_mode('TRIANGLE')
