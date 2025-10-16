@@ -85,7 +85,7 @@ display = st7796.ST7796(
 print('s4')
 
 # Initialize display
-display.init(st7735.TYPE_R_RED)
+display.init()
 display.set_rotation(lv.DISPLAY_ROTATION._180)
 display.set_backlight(100)
 
