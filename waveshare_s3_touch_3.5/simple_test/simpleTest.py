@@ -78,8 +78,8 @@ display_bus = lcd_bus.SPIBus(
 print("Display bus initialized")
 
 print("Initializing ST7796 display...")
-buf1 = display_bus.allocate_framebuffer(320 * 480 * 2, lcd_bus.MEMORY_SPIRAM)
-buf2 = display_bus.allocate_framebuffer(320 * 480 * 2, lcd_bus.MEMORY_SPIRAM)
+buf1 = display_bus.allocate_framebuffer(320 * 480 * 2, lcd_bus.MEMORY_PSRAM)
+buf2 = display_bus.allocate_framebuffer(320 * 480 * 2, lcd_bus.MEMORY_PSRAM)
 display = st7796.ST7796(
     data_bus=display_bus,
     display_width=_WIDTH,
