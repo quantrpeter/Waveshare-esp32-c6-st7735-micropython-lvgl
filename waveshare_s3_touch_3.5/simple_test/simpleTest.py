@@ -78,6 +78,8 @@ display_bus = lcd_bus.SPIBus(
 print("Display bus initialized")
 
 print("Initializing ST7796 display...")
+buf1 = display_bus.allocate_framebuffer(320 * 480 * 2, lcd_bus.MEMORY_SPIRAM)
+buf2 = display_bus.allocate_framebuffer(320 * 480 * 2, lcd_bus.MEMORY_SPIRAM)
 display = st7796.ST7796(
     data_bus=display_bus,
     display_width=_WIDTH,
@@ -86,10 +88,12 @@ display = st7796.ST7796(
     reset_pin=None,  # Reset already done via TCA9554
     backlight_on_state=st7796.STATE_HIGH,
     color_space=lv.COLOR_FORMAT.RGB565,
-    color_byte_order=st7796.BYTE_ORDER_BGR,  # Changed from BGR to RGB to fix color inversion
-    rgb565_byte_swap=True,  # Try without byte swap
+    color_byte_order=st7796.BYTE_ORDER_BGR,
+    rgb565_byte_swap=True,
     offset_x=_OFFSET_X,
-    offset_y=_OFFSET_Y
+    offset_y=_OFFSET_Y,
+	frame_buffer1=buf1,
+    frame_buffer2=buf2,
 )
 print("Display object created")
 
@@ -98,7 +102,7 @@ display.init()
 print("Display initialized")
 
 print("Setting rotation...")
-display.set_rotation(lv.DISPLAY_ROTATION._0)
+display.set_rotation(lv.DISPLAY_ROTATION._270)
 print("Rotation set")
 
 print("Setting color inversion...")
@@ -112,8 +116,8 @@ print("Backlight set")
 # Create screen
 print("Creating screen...")
 scrn = lv.screen_active()
-scrn.set_style_bg_color(lv.color_hex(0xffFF00), 0)  # Red background for testing
-print("Screen created with red background")
+scrn.set_style_bg_color(lv.color_hex(0x000000), 0)
+print("Screen created with black background")
 
 # Create a simple label (skip image for now)
 print("Creating label...")
@@ -123,6 +127,13 @@ label.set_pos(50, 100)
 label.set_style_text_color(lv.color_hex(0x00ffff), 0)
 label.set_style_text_font(lv.font_montserrat_16, 0)
 print("Label created")
+
+fs_drv = lv.fs_drv_t()
+fs_register(fs_drv, "S")
+img = lv.image(scrn)
+img.set_src("S:colorful.png")
+img.set_size(100, 100)
+img.set_pos(0, 5)
 
 print("Refreshing display...")
 lv.refr_now(lv.screen_active().get_display())
