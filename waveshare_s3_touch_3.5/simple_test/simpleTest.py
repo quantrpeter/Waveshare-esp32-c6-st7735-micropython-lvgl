@@ -78,8 +78,8 @@ display_bus = lcd_bus.SPIBus(
 print("Display bus initialized")
 
 print("Initializing ST7796 display...")
-buf1 = display_bus.allocate_framebuffer(320 * 480 * 2, lcd_bus.MEMORY_PSRAM)
-buf2 = display_bus.allocate_framebuffer(320 * 480 * 2, lcd_bus.MEMORY_PSRAM)
+# buf1 = display_bus.allocate_framebuffer(320 * 480 * 2, lcd_bus.MEMORY_PSRAM)
+# buf2 = display_bus.allocate_framebuffer(320 * 480 * 2, lcd_bus.MEMORY_PSRAM)
 display = st7796.ST7796(
     data_bus=display_bus,
     display_width=_WIDTH,
@@ -92,8 +92,8 @@ display = st7796.ST7796(
     rgb565_byte_swap=True,
     offset_x=_OFFSET_X,
     offset_y=_OFFSET_Y,
-	frame_buffer1=buf1,
-    frame_buffer2=buf2,
+	# frame_buffer1=buf1,
+    # frame_buffer2=buf2,
 )
 print("Display object created")
 
@@ -132,8 +132,8 @@ fs_drv = lv.fs_drv_t()
 fs_register(fs_drv, "S")
 img = lv.image(scrn)
 img.set_src("S:colorful.png")
-img.set_size(100, 100)
-img.set_pos(0, 5)
+img.set_size(480, 320)
+img.set_pos(0, 0)
 
 print("Refreshing display...")
 lv.refr_now(lv.screen_active().get_display())
