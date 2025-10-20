@@ -131,7 +131,7 @@ print("Label created")
 fs_drv = lv.fs_drv_t()
 fs_register(fs_drv, "S")
 img = lv.image(scrn)
-img.set_src("S:colorful.png")
+img.set_src("S:colorful50.png")
 img.set_size(480, 320)
 img.set_pos(0, 0)
 
