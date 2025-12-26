@@ -13,8 +13,7 @@ def connect_wifi():
     if not wlan.isconnected():
         print("Connecting to WiFi...", end="")
         wlan.connect(SSID, PASSWORD)
-        # Wait for connection (with timeout)
-        timeout = 10  # seconds
+        timeout = 10          # seconds
         start = time.time()
 
         while not wlan.isconnected():
@@ -23,14 +22,14 @@ def connect_wifi():
                 break
             time.sleep(0.3)
             print(".", end="")
+        
         if wlan.isconnected():
             print("\nConnected successfully!")
             print("IP address:", wlan.ifconfig()[0])
             print("Network config:", wlan.ifconfig())
         else:
             print("\nFailed to connect :(")
-            wlan.active(False)  # optional cleanup
-            sys.exit()
+            wlan.active(False)
 
 def get_weather():
     try:
