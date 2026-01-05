@@ -6,4 +6,4 @@ upload:
 	mpremote cp multimeter_c6_myEC11.py :main.py
 
 run:
-	mpremote reset && mpremote run multimeter_c6.py
+	mpremote reset && mpremote run multimeter_c6_myEC11.py
