@@ -4,8 +4,10 @@ import time
 import sys
 
 # WiFi credentials
-SSID = 'Quantr 2.4G'
-PASSWORD = 'quantrwifi'
+# SSID = 'Quantr 2.4G'
+# PASSWORD = 'quantrwifi'
+SSID = 'peter 2.4G'
+PASSWORD = 'peter1234'
 
 def connect_wifi():
     wlan = network.WLAN(network.STA_IF)
