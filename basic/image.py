@@ -4,22 +4,21 @@ import machine
 from time import sleep
 import st7735
 import lvgl as lv
+from fs_driver import fs_register
 
 # display settings
 _WIDTH = 128
 _HEIGHT = 128
-_BL = 19
-_RST = 14
-_DC = 15
+_BL = 21
+_RST = 18
+_DC = 19
 
-_MOSI = 21 #SDA
-#_MISO = 20
-_SCK = 22  # SCL
+_MOSI = 15  # SDA
+# _MISO = 20
+_SCK = 14  # SCL
 _HOST = 1  # SPI2
-
-_LCD_CS = 18
-_LCD_FREQ = 2000000
-
+_LCD_CS = 20
+_LCD_FREQ = 4000000
 _OFFSET_X = 2
 _OFFSET_Y = 3
 
@@ -64,15 +63,15 @@ display.set_backlight(100)
 
 # Create screen
 scrn = lv.screen_active()
-scrn.set_style_bg_color(lv.color_hex(0xffffff), 0)  # Black background
+scrn.set_style_bg_color(lv.color_hex(0x000000), 0)  # Black background
 
-from fs_driver import fs_register
 fs_drv = lv.fs_drv_t()
 fs_register(fs_drv, "S")
 
 img = lv.image(scrn)
 img.set_src("S:colorful.png")
 img.set_size(128, 128)
+img.set_pos(0, 0)
 img.center()
 
 # import task_handler
