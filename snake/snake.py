@@ -10,19 +10,23 @@ lv.init()
 # ── Display settings ──
 _WIDTH = 128
 _HEIGHT = 128
-_BL = 21
-_RST = 18
-_DC = 19
-_MOSI = 15
-_SCK = 14
-_HOST = 1
-_LCD_CS = 20
-_LCD_FREQ = 4000000
+_BL = 19
+_RST = 14
+_DC = 15
+ 
+_MOSI = 21 #SDA
+_MISO = 20
+_SCK = 22  # SCL
+_HOST = 1  # SPI2
+ 
+_LCD_CS = 18
+_LCD_FREQ = 2000000
+ 
 _OFFSET_X = 2
 _OFFSET_Y = 3
 
-BUTTON1 = 22
-BUTTON2 = 23
+BUTTON1 = 1
+BUTTON2 = 2
 
 spi_bus = machine.SPI.Bus(host=_HOST, mosi=_MOSI, sck=_SCK)
 display_bus = lcd_bus.SPIBus(spi_bus=spi_bus, freq=_LCD_FREQ, dc=_DC, cs=_LCD_CS)
